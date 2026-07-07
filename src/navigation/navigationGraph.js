@@ -8,7 +8,7 @@ export const navigationGraph = {
     ViceRectorResearch: ["corridor_main_7_8"],
     academiccouncil: ["corridor_main_6_3"],
 
-    // ЛАНЦЮЖОК КОРИДОРУ (Кожна точка з'єднана лише з сусідніми + своєю кімнатою)
+    // ЛАНЦЮЖОК КОРИДОРУ
     corridor_main_14_0: ["museum", "corridor_main_12_6","stairs_1f"],
     corridor_main_12_6: ["rector", "corridor_main_14_0", "corridor_main_11_0"],
     corridor_main_11_0: ["rectorsroom", "corridor_main_12_6", "corridor_main_10_0"],
@@ -17,10 +17,8 @@ export const navigationGraph = {
     corridor_main_8_2:  ["atc", "corridor_main_entrance_hub", "corridor_main_7_8"],
     corridor_main_7_8:  ["ViceRectorResearch", "corridor_main_8_2", "corridor_main_6_3"],
     corridor_main_6_3:  ["academiccouncil", "corridor_main_7_8", "corridor_hub_10_5"],
-
     main_entrance: ["corridor_main_entrance_hub"],
     corridor_main_entrance_hub: ["main_entrance", "corridor_main_9_3", "corridor_main_8_2"],
-    //
 
     //
     cafe: ["corridor_hub_6_0"],
@@ -33,8 +31,6 @@ export const navigationGraph = {
     corridor_hub_9_0: ["a16", "corridor_hub_8_0", "corridor_hub_10_5"],
     corridor_hub_10_5: ["a15", "corridor_hub_9_0", "corridor_main_6_3", "corridor_main_p5"],
 
-
-    // Зв'язки аудиторій із їхніми точками виходу
     side_entrance_1: ["corridor_a8_top"],
 
     p5: ["corridor_main_p5"],
@@ -46,8 +42,6 @@ export const navigationGraph = {
     corridor_a8_exit: ["corridor_a8_mid", "corridor_main_p5"],
     corridor_main_p5: ["p5", "corridor_a8_exit", "c_long_p1_1", "corridor_hub_10_5"],
 
-
-/////
     side_entrance_4: ["c_long_m16_5_hub"],
     side_entrance_5: ["c_long_m18_8"],
     c_long_m16_5_hub: ["side_entrance_4", "c_long_m16_3", "c_long_m17_1"],
@@ -68,10 +62,8 @@ export const navigationGraph = {
     p1: ["c_long_m10_0"],
     kIEI: ["c_long_m12_0"],
     clerk: ["c_long_m13_5"],
-
-  a57: ["c_long_m14_5"],
+    a57: ["c_long_m14_5"],
     studentdepartment: ["c_long_m14_5"],
-
     a56: ["c_long_m15_3"],
     a55: ["c_long_m16_3"],
     a54: ["c_long_m17_1"],
@@ -79,13 +71,10 @@ export const navigationGraph = {
     a53: ["c_long_m18_0"],
     a46: ["c_long_m18_8"],
     a47: ["c_long_m19_7"],
-
     a51: ["c_long_m20_6"],
     a48: ["c_long_m20_6"],
-
     a50: ["c_long_m21_5"],
     a49: ["c_long_m21_5"],
-
 
     c_long_p1_1:  ["a2", "c_long_0_1", "corridor_main_p5"],
     c_long_0_1:   ["kKryvytska", "c_long_p1_1", "c_long_m1_1", "stairs_z0_1f"],
@@ -114,23 +103,16 @@ export const navigationGraph = {
     c_long_m20_6: ["a51", "a48", "c_long_m19_7", "c_long_m21_5"],
     c_long_m21_5: ["a50", "a49", "c_long_m20_6"],
 
-    /////
-// Зв'язки нових кімнат із коридором
     infotechnologycenter: ["corridor_hub_3_0"],
     side_entrance_2: ["corridor_hub_2_0"],
     a24: ["corridor_hub_0_6"],
     a25: ["corridor_hub_m1_1"],
 
-    // Нові точки коридору (з'єднані між собою)
-    corridor_hub_3_0: ["infotechnologycenter", "corridor_hub_2_0", "corridor_hub_6_0"], // З'ЄДНАННЯ З ТВОЄЮ СТАРОЮ ТОЧКОЮ 6_0!
+    corridor_hub_3_0: ["infotechnologycenter", "corridor_hub_2_0", "corridor_hub_6_0"],
     corridor_hub_2_0: ["side_entrance_2", "corridor_hub_3_0", "corridor_hub_0_6"],
     corridor_hub_0_6: ["a24", "corridor_hub_2_0", "corridor_hub_m1_1"],
     corridor_hub_m1_1: ["a25", "corridor_hub_0_6"],
 
-
-
-///////////////////2222222222222222222222222222222////////////////
-    // === ГІЛКА ДРУГОГО ПОВЕРХУ (Адміністративне крило) ===
     a23: ["corridor_main_13_0_2f"],
     a22: ["corridor_main_12_0_2f"],
     hall: ["corridor_main_9_5_2f"],
@@ -140,36 +122,27 @@ export const navigationGraph = {
     corridor_main_12_0_2f: ["a22", "corridor_main_13_0_2f", "corridor_main_9_5_2f"],
     corridor_main_9_5_2f:  ["hall", "corridor_main_12_0_2f", "corridor_main_6_1_2f"],
 
-    // З'ЄДНАННЯ: corridor_main_6_1_2f тепер веде і до спускного хабу, і в наступне крило до corridor_hub_10_7_2f
     corridor_main_6_1_2f:  ["a21", "corridor_main_9_5_2f", "corridor_hub_10_6", "corridor_hub_10_7_2f"],
 
-    // === ГІЛКА ДРУГОГО ПОВЕРХУ (Крило над кафе) ===
     a20: ["corridor_hub_10_7_2f"],
     a19: ["corridor_hub_9_5_2f"],
     a18: ["corridor_hub_8_1_2f"],
     loft: ["corridor_hub_6_3_2f"],
 
-    // З'ЄДНАННЯ: corridor_hub_10_7_2f тепер веде назад в адмін-коридор до corridor_main_6_1_2f
     corridor_hub_10_7_2f: ["a20", "corridor_hub_10_6", "corridor_hub_9_5_2f", "corridor_main_6_1_2f"],
     corridor_hub_9_5_2f:  ["a19", "corridor_hub_10_7_2f", "corridor_hub_8_1_2f"],
     corridor_hub_8_1_2f:  ["a18", "corridor_hub_9_5_2f", "corridor_hub_6_3_2f"],
     corridor_hub_6_3_2f:  ["loft", "corridor_hub_8_1_2f"],
 
-
-
-    // Зв'язки кімнат із коридором кутка
     p4: ["corridor_main_p4"],
     a7a: ["corridor_a7_mid"],
     a7: ["corridor_a7_top"],
 
-    // ЛАНЦЮЖОК КОРИДОРУ КУТКА (Повністю замкнутий)
     corridor_a7_top: ["a7", "corridor_a7_mid"],
     corridor_a7_mid: ["a7a", "corridor_a7_top", "corridor_a7_exit"],
     corridor_a7_exit: ["corridor_a7_mid", "corridor_main_p4"],
     corridor_main_p4: ["p4", "corridor_a7_exit", "c_long_p1_1_2f", "corridor_hub_10_6"],
 
-
-// Зв'язки кабінетів із магістраллю 2-го поверху
     a6: ["c_long_p1_1_2f"],
     kf: ["c_long_0_2_2f"],
     a14: ["c_long_m1_1_2f"],
@@ -185,7 +158,6 @@ export const navigationGraph = {
     a74: ["c_long_m15_1_2f"],
     a65: ["c_long_m15_9_2f"],
     a73: ["c_long_m17_1_2f"],
-   // vivat: ["c_long_m18_0_2f"],
     a72: ["c_long_m18_0_2f"],
     a67: ["c_long_m19_2_2f"],
     a68: ["c_long_m20_4_2f"],
@@ -193,8 +165,7 @@ export const navigationGraph = {
     a69: ["c_long_m21_4_2f"],
     a70: ["c_long_m21_4_2f"],
 
-    // ЛАНЦЮЖОК ЦЕНТРАЛЬНОГО КОРИДОРУ (Послідовний рух за координатою Z від +1.1 до -21.4)
-    c_long_p1_1_2f:  ["a6", "c_long_0_2_2f", "corridor_main_p4"], // Початок коридору зв'язаний з кутком П4
+    c_long_p1_1_2f:  ["a6", "c_long_0_2_2f", "corridor_main_p4"],
     c_long_0_2_2f:   ["kf", "c_long_p1_1_2f", "c_long_m1_1_2f", "stairs_z0_2f"],
     c_long_m1_1_2f:  ["a14", "c_long_0_2_2f", "c_long_m1_7_2f"],
     c_long_m1_7_2f:  ["a9", "c_long_m1_1_2f", "c_long_m3_5_2f"],
@@ -217,10 +188,7 @@ export const navigationGraph = {
 
     corridor_hub_10_6: ["corridor_main_p4", "corridor_main_6_1_2f", "corridor_hub_10_7_2f"],
 
-
-
     //сходи
-    // СХОДИ 1 ПОВЕРХУ: Ведуть в коридор 1 поверху та НА СХОДИ 2 ПОВЕРХУ
     stairs_1f: ["corridor_main_14_0", "stairs_2f"],
     stairs_2f: ["corridor_main_13_0_2f", "stairs_1f"],
 

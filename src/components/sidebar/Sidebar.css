@@ -21,13 +21,13 @@
     right: 16px;
     width: 36px;
     height: 36px;
-    border-radius: 50%; /* робимо круглою */
-    background: #ece0d9; /* приємний колір під тон фону */
+    border-radius: 50%;
+    background: #ece0d9;
     border: none;
     cursor: pointer;
-    display: flex;          /* вмикаємо флекс для центрування */
-    align-items: center;    /* центруємо по вертикалі */
-    justify-content: center; /* центруємо по горизонталі */
+    display: flex;
+    align-items: center;
+    justify-content: center;
     color: #5c4d42;
     transition: background 0.2s ease, color 0.2s ease;
 }
@@ -53,25 +53,23 @@
 
 .sidebar-text {
     font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    font-size: 14.5px;             /* Ідеальний базовий розмір для десктопа */
-    line-height: 1.65;             /* Збільшена відстань між рядками для легкості читання */
-    text-align: left;              /* Ліве вирівнювання виглядає сучасніше за justify */
-    color: #5a4e48;                /* Твій фірмовий м'який кавовий колір для основного тексту */
+    font-size: 14.5px;
+    line-height: 1.65;
+    text-align: left;
+    color: #5a4e48;
 }
 
-/* Стилізація абзаців */
 .sidebar-text p {
     margin-top: 0;
-    margin-bottom: 12px;           /* Гарний відступ між параграфами */
+    margin-bottom: 12px;
 }
 
 .sidebar-text p:last-child {
-    margin-bottom: 0;              /* Прибираємо зайвий відступ у кінці */
+    margin-bottom: 0;
 }
 
-/* Стилізація жирного акцентного тексту (назви аудиторій/деканатів) */
 .sidebar-text strong {
-    color: #26160d;                /* Твій глибокий темний колір активних кнопок */
+    color: #26160d;
     font-weight: 700;
     letter-spacing: 0.2px;
 }

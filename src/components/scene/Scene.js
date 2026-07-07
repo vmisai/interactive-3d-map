@@ -15,18 +15,16 @@ import { navigationNodes } from "../../navigation/navigationNodes";
 const getNodeFloor = (nodeId, nodesObj) => {
     const node = nodesObj[nodeId];
     if (!node) return 1;
-
     const yCoord = node[1];
     return yCoord > 0.5 ? 2 : 1;
 };
 
 const FloorModel1 = () => {
-  const { t } = useTranslation();
-  const { scene, error, isLoading } = useGLTF(process.env.PUBLIC_URL + "/models/floor1.glb");
-
-    const colorMap = useLoader(THREE.TextureLoader, "/textures/d2.jpg");
-    const normalMap = useLoader(THREE.TextureLoader, "/textures/n2.jpg");
-    const roughnessMap = useLoader(THREE.TextureLoader, "/textures/r2.jpg");
+    const { t } = useTranslation();
+    const { scene, error, isLoading } = useGLTF(process.env.PUBLIC_URL + "/models/floor1.glb");
+    const colorMap = useLoader(THREE.TextureLoader, "/textures/diffuse2.jpg");
+    const normalMap = useLoader(THREE.TextureLoader, "/textures/normal2.jpg");
+    const roughnessMap = useLoader(THREE.TextureLoader, "/textures/rought2.jpg");
     useEffect(() => {
         if (!scene) return;
 
@@ -50,31 +48,25 @@ const FloorModel1 = () => {
   if (error) {
     console.error("Error loading floor1 model:", error);
   }
-
   if (isLoading) {
     return <div>{t("floor.loadingFirst")}</div>;
   }
-
   return <primitive object={scene} scale={0.05} />;
 };
 
 const FloorModel2 = () => {
-  const { t } = useTranslation();
-  const { scene, error, isLoading } = useGLTF(process.env.PUBLIC_URL + "/models/floor2.glb");
-
-
+    const { t } = useTranslation();
+    const { scene, error, isLoading } = useGLTF(process.env.PUBLIC_URL + "/models/floor2.glb");
     const colorMap = useLoader(THREE.TextureLoader, "/textures/diffuse.jpg");
     const normalMap = useLoader(THREE.TextureLoader, "/textures/normal_gl.jpg");
     const roughnessMap = useLoader(THREE.TextureLoader, "/textures/rough.jpg");
 
     useEffect(() => {
         if (!scene) return;
-
         [colorMap, normalMap, roughnessMap].forEach((map) => {
             map.wrapS = map.wrapT = THREE.RepeatWrapping;
             map.repeat.set(8, 8);
         });
-
         scene.traverse((child) => {
             if (child.isMesh) {
                 child.material.map = colorMap;
@@ -88,11 +80,9 @@ const FloorModel2 = () => {
   if (error) {
     console.error("Error loading floor2 model:", error);
   }
-
   if (isLoading) {
     return <div>{t("floor.loadingSecond")}</div>;
   }
-
   return <primitive object={scene} scale={0.05} />;
 };
 
@@ -133,7 +123,6 @@ const Scene = ({
   useEffect(() => {
     setCurrentFloor(activeFloor);
   }, [activeFloor]);
-
 
     useEffect(() => {
         if (!routeFrom || !routeTo) {
@@ -971,20 +960,15 @@ const Scene = ({
           </div>
 
           <Canvas style={{height: "100vh", position: "relative", zIndex: 1}}  camera={{ position: [0, 15, 20], fov: 50 }} >
-
              <color attach="background" args={["#e3d7c9"]}/>
               <ambientLight intensity={0.5}/>
               <directionalLight position={[10, 10, 5]}/>
-
-
               <group visible={currentFloor === 1}>
                   <FloorModel1/>
               </group>
-
               <group visible={currentFloor === 2}>
                   <FloorModel2/>
               </group>
-
               {renderInteractiveZones()}
 
               {currentFloor === 1 && (
@@ -1050,13 +1034,10 @@ const Scene = ({
                   </>
               )}
 
-
               {(() => {
                   if (!route || route.length === 0) return null;
-
                   const currentFloorNodes = route.filter(nodeId => getNodeFloor(nodeId, navigationNodes) === currentFloor);
                   if (currentFloorNodes.length < 2) return null;
-
                   const pathCoordinates = currentFloorNodes.map(nodeId => {
                       const coords = navigationNodes[nodeId];
                       if (!coords) return [0, 0, 0];

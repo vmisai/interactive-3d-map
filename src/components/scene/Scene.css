@@ -1,6 +1,4 @@
-/* ==========================================================================
-   1. Основна кнопка-перемикач поверхів (Segmented Control)
-   ========================================================================== */
+
 .button-container {
   position: fixed;
   top: 15px;
@@ -42,20 +40,17 @@
   color: #26160d;
 }
 
-/* ==========================================================================
-   2. Нові стилі для вертикальної капсули ЗУМУ (Як на фото з плюсом і мінусом)
-   ========================================================================== */
 .zoom-controls {
   position: fixed;
-  left: 20px;          /* Позиція капсули на екрані (можна змінити на right, якщо треба) */
+  left: 20px;
   bottom: 45px;
   z-index: 1000;
   display: flex;
   flex-direction: column;
   background-color: #ffffff;
-  border-radius: 14px; /* Округлені кути для всієї капсули */
+  border-radius: 14px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-  overflow: hidden;    /* Ховає фони кнопок, щоб вони не вилазили за заокруглення */
+  overflow: hidden;
 }
 
 .zoom-button {
@@ -66,7 +61,7 @@
   justify-content: center;
   font-family: sans-serif;
   font-size: 22px;
-  font-weight: 300;    /* Тонкі акуратні знаки + та - */
+  font-weight: 300;
   color: #2c3e50;
   background-color: transparent;
   border: none;
@@ -74,7 +69,6 @@
   transition: background-color 0.2s ease;
 }
 
-/* Тонка лінія розмежування між плюсом і мінусом */
 .zoom-controls .zoom-button:first-child {
   border-bottom: 1px solid #f0f0f0;
 }
@@ -86,10 +80,6 @@
 .zoom-button:active {
   background-color: #f0eae6;
 }
-
-/* ==========================================================================
-   3. Стилі для пінів (шпильок)
-   ========================================================================== */
 
 .three-js-html-container,
 [data-html-portal] {
@@ -136,7 +126,6 @@
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
-/* --- ВАРІАНТ 1: ВХОДИ / ВИХОДИ (Контрастний світлий стиль — ТЕКСТ ЗНИЗУ) --- */
 .pin-variant-entrance {
   flex-direction: column;
 }
@@ -178,7 +167,7 @@
 .pin-variant-entrance .modern-pin-label::after {
   content: '';
   position: absolute;
-  top: -5px; /* Зсуваємо вгору над баблом */
+  top: -5px;
   left: 50%;
   transform: translateX(-50%) rotate(45deg);
   width: 8px;
@@ -188,9 +177,6 @@
   border-top: 1.5px solid #26160d;
 }
 
-
-
-/* --- ВАРІАНТ 2: СХОДИ (Твій ідеальний кавовий стиль — ТЕКСТ ЗВЕРХУ) --- */
 .pin-variant-stairs {
   flex-direction: column-reverse;
 }
@@ -204,10 +190,10 @@
 .pin-variant-stairs .modern-pin-label {
   margin-top: 0;
   margin-bottom: 9px;
-  background: #f6eeea !important; /* Твій фірмовий світлий колір */
-  color: #26160d !important;      /* Темний текст для ідеального читання */
+  background: #f6eeea !important;
+  color: #26160d !important;
   font-weight: 800;
-  border: 1.5px solid #26160d;    /* Акуратна тонка темна рамка */
+  border: 1.5px solid #26160d;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
   position: relative;
 }
@@ -234,14 +220,6 @@
   height: 18px;
 }
 
-
-
-
-/* ==========================================================================
-   4. Адаптивність (Акуратні медіа-запити без каші всередині)
-   ========================================================================== */
-
-/* МОБІЛЬНІ ПРИСТРОЇ */
 @media (max-width: 768px) {
   .button-container {
     left: 85px;
@@ -261,36 +239,34 @@
 
   .zoom-controls {
     left: 15px;
-    bottom: 40px; /* Трохи піднімаємо над краєм екрану смартфона */
+    bottom: 40px;
   }
 
   .zoom-button {
-    width: 36px;  /* Робимо компактнішими на мобільних */
+    width: 36px;
     height: 36px;
     font-size: 18px;
   }
 
   .accordion-toggle {
-    padding: 14px 4px;   /* Зберігаємо компактність на телефонах */
+    padding: 14px 4px;
     font-size: 13px;
   }
 
   .room-btn {
-    padding: 11px 14px;  /* Трохи більше місця для натискання пальцем на екрані */
+    padding: 11px 14px;
     font-size: 14px;
   }
 
 }
 
-/* ПЛАНШЕТИ */
 @media (min-width: 769px) and (max-width: 1024px) {
-  /* === Збільшення кнопок поверхів для планшетів === */
   .button-container {
     gap: 10px;
     padding: 8px;
   }
   .floor-button {
-    height: 46px;      /* Ідеальний розмір під пальці на планшеті */
+    height: 46px;
     padding: 0 22px;
     font-size: 20px;
   }
@@ -300,12 +276,11 @@
     bottom: 45px;
   }
   .zoom-button {
-    width: 62px;       /* Збільшено з 54px до 62px — тепер точно не промахнешся */
-    height: 62px;      /* Збільшено з 54px до 62px */
-    font-size: 34px;   /* Самі значки + та - стали значно більшими (було 28px) */
+    width: 62px;
+    height: 62px;
+    font-size: 34px;
   }
 
-  /* === ЗБІЛЬШЕННЯ ПІНІВ (МАЯЧКІВ) ДЛЯ ПЛАНШЕТІВ === */
   .modern-pin-container {
     padding: 18px;
   }
@@ -318,7 +293,7 @@
     height: 32px;
   }
   .modern-pin-label {
-    font-size: 16px;     /* Теж підняли до 16px, щоб гармонувало з поверхами */
+    font-size: 16px;
     padding: 8px 16px;
     margin-top: 14px;
   }
@@ -336,7 +311,6 @@
     height: 10px;
   }
 
-  /* Інші елементи сайдбару на планшеті */
   .accordion-toggle {
     font-size: 15px;
     padding: 16px 4px;

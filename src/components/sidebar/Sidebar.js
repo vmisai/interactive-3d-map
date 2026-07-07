@@ -2,13 +2,10 @@ import React from "react";
 import "./Sidebar.css";
 import { useTranslation } from "react-i18next";
 
-
 const Sidebar = ({ room, closeSidebar }) => {
 
   const { t, i18n } = useTranslation();
-
   if (!room) return null;
-
   const roomInfo = {
     a1: {
       title: t("rooms.auditorium.a1"),
@@ -597,11 +594,7 @@ const Sidebar = ({ room, closeSidebar }) => {
   </svg>
 </button>
 
-
       {title && <h2>{title}</h2>}
-
-
-      {/* НОВИЙ БЛОК ДЛЯ БЕЙДЖІВ ТЕХНІКИ */}
       {features.length > 0 && (
           <div className="sidebar-features">
             {features.includes("projector") && (
@@ -623,10 +616,7 @@ const Sidebar = ({ room, closeSidebar }) => {
             )}
           </div>
       )}
-
-
       {image && <img src={image} alt={title} />}
-
       {text && (
         <div
           className="sidebar-text"

@@ -9,10 +9,9 @@ import BurgerMenu from "./components/layout/BurgerMenu";
 function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [activeRoom, setActiveRoom] = useState(null);
-  const [activeFloor, setActiveFloor] = useState(1); // Додаємо стан активного поверху
-  const [isMenuOpen, setIsMenuOpen] = useState(false);       // Чи відкрите бургер-меню
+  const [activeFloor, setActiveFloor] = useState(1);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isRouteMode, setIsRouteMode] = useState(false);
-  const [route, setRoute] = useState(null);
   const [routeFrom, setRouteFrom] = useState(null);
   const [routeTo, setRouteTo] = useState(null);
 
@@ -22,16 +21,6 @@ function App() {
   }, []);
 
   const closeSidebar = () => setActiveRoom(null);
-
-  const rooms = ["EMMIT", "Room 2", "Room 3"];
-
-  const handleRoomSelect = (room) => {
-    setActiveRoom(room);
-  };
-
-  const handleFloorChange = (floor) => {
-    setActiveFloor(floor);
-  };
 
   const handleCreateRoute = (from, to) => {
     setRouteFrom(from);
