@@ -1,84 +1,145 @@
 
-.button-container {
+.map-viewport {
   position: fixed;
-  top: 15px;
+  inset: 0;
+  width: 100%;
+  height: 100dvh;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 38%, rgba(255, 252, 247, 0.92) 0%, rgba(240, 229, 216, 0.7) 38%, transparent 68%),
+    linear-gradient(155deg, #f4ede4 0%, #e8dccf 46%, #d8c7b7 100%);
+  isolation: isolate;
+}
+
+.map-canvas {
+  position: absolute !important;
+  inset: 0;
+  width: 100% !important;
+  height: 100% !important;
+  z-index: 1;
+}
+
+.floor-controls {
+  position: fixed;
+  top: 18px;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 1000;
+  z-index: 20;
   display: flex;
-  background-color: #ffffff;
-  padding: 4px;
-  border-radius: 40px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
   gap: 4px;
+  padding: 5px;
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(255, 255, 255, 0.68);
+  border-radius: 18px;
+  box-shadow: 0 12px 30px rgba(61, 46, 32, 0.12), 0 2px 8px rgba(61, 46, 32, 0.06);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
 }
 
 .floor-button {
-  height: 34px;
-  padding: 0 16px;
-  font-family: sans-serif;
-  font-size: 13px;
-  font-weight: 500;
-  letter-spacing: 0;
-  text-transform: none;
+  min-height: 40px;
+  padding: 0 14px 0 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 650;
   white-space: nowrap;
-  color: #7d6e65;
-  background-color: transparent;
+  color: #75665d;
+  background: transparent;
   border: none;
-  border-radius: 34px;
+  border-radius: 13px;
   cursor: pointer;
-  transition: all 0.25s ease-in-out;
+  transition: color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.floor-number {
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  background: rgba(38, 22, 13, 0.07);
+  color: #5d4c42;
+  font-size: 12px;
+  font-weight: 800;
 }
 
 .floor-button.active {
-  background-color: #26160d;
-  color: #ffffff;
+  color: #fff;
+  background: #26160d;
+  box-shadow: 0 5px 14px rgba(38, 22, 13, 0.2);
 }
 
-.floor-button:not(.active):hover {
-  background-color: #f5f0ed;
+.floor-button.active .floor-number {
   color: #26160d;
+  background: #e8a261;
 }
 
-.zoom-controls {
+.floor-button:not(.active):hover,
+.map-control-button:hover {
+  color: #26160d;
+  background: rgba(38, 22, 13, 0.07);
+}
+
+.floor-button:active,
+.map-control-button:active {
+  transform: scale(0.96);
+}
+
+.floor-button:focus-visible,
+.map-control-button:focus-visible {
+  outline: 3px solid rgba(232, 162, 97, 0.52);
+  outline-offset: 2px;
+}
+
+.map-controls {
   position: fixed;
-  left: 20px;
-  bottom: 45px;
-  z-index: 1000;
+  right: 22px;
+  bottom: 64px;
+  z-index: 20;
   display: flex;
   flex-direction: column;
-  background-color: #ffffff;
-  border-radius: 14px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-  overflow: hidden;
-}
-
-.zoom-button {
-  width: 42px;
-  height: 42px;
-  display: flex;
   align-items: center;
-  justify-content: center;
-  font-family: sans-serif;
-  font-size: 22px;
-  font-weight: 300;
-  color: #2c3e50;
-  background-color: transparent;
+  gap: 2px;
+  padding: 5px;
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(255, 255, 255, 0.68);
+  border-radius: 16px;
+  box-shadow: 0 12px 30px rgba(61, 46, 32, 0.12), 0 2px 8px rgba(61, 46, 32, 0.06);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+}
+
+.map-control-button {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  color: #493a31;
+  background: transparent;
   border: none;
+  border-radius: 11px;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: color 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
 }
 
-.zoom-controls .zoom-button:first-child {
-  border-bottom: 1px solid #f0f0f0;
+.map-control-button svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
-.zoom-button:hover {
-  background-color: #f9f6f4;
-}
-
-.zoom-button:active {
-  background-color: #f0eae6;
+.map-controls-divider {
+  width: 24px;
+  height: 1px;
+  margin: 2px 0;
+  background: rgba(61, 46, 32, 0.12);
 }
 
 .three-js-html-container,
@@ -221,31 +282,36 @@
 }
 
 @media (max-width: 768px) {
-  .button-container {
-    left: 85px;
+  .floor-controls {
+    left: 68px;
     right: auto;
-    top: 18px;
+    top: 14px;
     transform: none;
-    justify-content: flex-start;
-    gap: 6px;
-    width: auto;
+    padding: 4px;
+    border-radius: 15px;
   }
 
   .floor-button {
-    height: 32px;
-    padding: 0 12px;
-    font-size: 13px;
+    min-height: 36px;
+    padding: 0 9px 0 6px;
+    gap: 6px;
+    font-size: 11px;
   }
 
-  .zoom-controls {
-    left: 15px;
-    bottom: 40px;
+  .floor-number {
+    width: 24px;
+    height: 24px;
   }
 
-  .zoom-button {
+  .map-controls {
+    right: 14px;
+    bottom: 58px;
+    padding: 4px;
+  }
+
+  .map-control-button {
     width: 36px;
     height: 36px;
-    font-size: 18px;
   }
 
   .accordion-toggle {
@@ -261,24 +327,36 @@
 }
 
 @media (min-width: 769px) and (max-width: 1024px) {
-  .button-container {
-    gap: 10px;
-    padding: 8px;
+  .floor-controls {
+    top: 20px;
+    padding: 6px;
   }
   .floor-button {
-    height: 46px;
-    padding: 0 22px;
-    font-size: 20px;
+    min-height: 46px;
+    padding: 0 18px 0 8px;
+    font-size: 16px;
   }
 
-  .zoom-controls {
-    left: 25px;
-    bottom: 45px;
+  .floor-number {
+    width: 30px;
+    height: 30px;
+    font-size: 14px;
   }
-  .zoom-button {
-    width: 62px;
-    height: 62px;
-    font-size: 34px;
+
+  .map-controls {
+    right: 22px;
+    bottom: 76px;
+    padding: 6px;
+  }
+
+  .map-control-button {
+    width: 46px;
+    height: 46px;
+  }
+
+  .map-control-button svg {
+    width: 22px;
+    height: 22px;
   }
 
   .modern-pin-container {

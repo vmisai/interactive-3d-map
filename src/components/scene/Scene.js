@@ -9,8 +9,37 @@ import CameraControls from "./CameraControls";
 import "./Scene.css";
 import { bfs } from "../../navigation/pathfinding";
 import RoutePath from "../../navigation/RoutePath";
-import { Html, Billboard } from "@react-three/drei";
+import { ContactShadows, Html, Billboard } from "@react-three/drei";
 import { navigationNodes } from "../../navigation/navigationNodes";
+import { CameraFocus, FloorLayer } from "./SceneEffects";
+
+const prepareTexture = (texture, isColorTexture = false) => {
+    texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+    texture.repeat.set(8, 8);
+    texture.anisotropy = 8;
+    if (isColorTexture) texture.colorSpace = THREE.SRGBColorSpace;
+    texture.needsUpdate = true;
+};
+
+const tuneFloorMaterials = (scene) => {
+    scene.traverse((child) => {
+        if (!child.isMesh) return;
+
+        child.castShadow = true;
+        child.receiveShadow = true;
+
+        const materials = Array.isArray(child.material) ? child.material : [child.material];
+        materials.forEach((material) => {
+            if (!material) return;
+            material.roughness = 0.82;
+            material.metalness = 0.02;
+            material.envMapIntensity = 0.45;
+            material.transparent = true;
+            material.userData.baseOpacity = 1;
+            material.needsUpdate = true;
+        });
+    });
+};
 
 const getNodeFloor = (nodeId, nodesObj) => {
     const node = nodesObj[nodeId];
@@ -28,10 +57,10 @@ const FloorModel1 = () => {
     useEffect(() => {
         if (!scene) return;
 
-        [colorMap, normalMap, roughnessMap].forEach((map) => {
-            map.wrapS = map.wrapT = THREE.RepeatWrapping;
-            map.repeat.set(8, 8);
-        });
+        prepareTexture(colorMap, true);
+        prepareTexture(normalMap);
+        prepareTexture(roughnessMap);
+        tuneFloorMaterials(scene);
 
         scene.traverse((child) => {
             if (child.isMesh && child.name === "Cube030") {
@@ -63,10 +92,11 @@ const FloorModel2 = () => {
 
     useEffect(() => {
         if (!scene) return;
-        [colorMap, normalMap, roughnessMap].forEach((map) => {
-            map.wrapS = map.wrapT = THREE.RepeatWrapping;
-            map.repeat.set(8, 8);
-        });
+        prepareTexture(colorMap, true);
+        prepareTexture(normalMap);
+        prepareTexture(roughnessMap);
+        tuneFloorMaterials(scene);
+
         scene.traverse((child) => {
             if (child.isMesh) {
                 child.material.map = colorMap;
@@ -75,7 +105,7 @@ const FloorModel2 = () => {
                 child.material.needsUpdate = true;
             }
         });
-    }, [scene]);
+    }, [scene, colorMap, normalMap, roughnessMap]);
 
   if (error) {
     console.error("Error loading floor2 model:", error);
@@ -139,8 +169,8 @@ const Scene = ({
         setIsMenuOpen(true);
     };
 
-  const renderInteractiveZones = () => {
-    if (currentFloor === 1) {
+  const renderInteractiveZones = (floor) => {
+    if (floor === 1) {
       return (
         <>
           <InteractiveZone
@@ -545,7 +575,7 @@ const Scene = ({
           />
         </>
       );
-    } else if (currentFloor === 2) {
+    } else if (floor === 2) {
       return (
         <>
           <InteractiveZone
@@ -932,44 +962,88 @@ const Scene = ({
   };
     const zoomIn = () => {
         if (controlsRef.current) {
-            controlsRef.current.dollyIn(1.2);
+            controlsRef.current.dollyOut(1.2);
             controlsRef.current.update();
         }
     };
 
     const zoomOut = () => {
         if (controlsRef.current) {
-            controlsRef.current.dollyOut(1.2);
-            controlsRef.current.dollyOut(1.2);
+            controlsRef.current.dollyIn(1.2);
+            controlsRef.current.update();
+        }
+    };
+
+    const resetView = () => {
+        if (controlsRef.current) {
+            controlsRef.current.reset();
             controlsRef.current.update();
         }
     };
   return (
-      <div style={{position: "relative", height: "100vh"}}>
-          <div className="button-container">
+      <main className="map-viewport">
+          <div className="floor-controls" role="group" aria-label="Floor selection">
               <button
                   className={`floor-button ${currentFloor === 1 ? "active" : ""}`}
-                  onClick={() => onFloorChange(1)}>
+                  onClick={() => onFloorChange(1)}
+                  aria-pressed={currentFloor === 1}>
+                  <span className="floor-number">1</span>
                   {t("floor.first")}
               </button>
               <button
                   className={`floor-button ${currentFloor === 2 ? "active" : ""}`}
-                  onClick={() => onFloorChange(2)}>
+                  onClick={() => onFloorChange(2)}
+                  aria-pressed={currentFloor === 2}>
+                  <span className="floor-number">2</span>
                   {t("floor.second")}
               </button>
           </div>
 
-          <Canvas style={{height: "100vh", position: "relative", zIndex: 1}}  camera={{ position: [0, 15, 20], fov: 50 }} >
-             <color attach="background" args={["#e3d7c9"]}/>
-              <ambientLight intensity={0.5}/>
-              <directionalLight position={[10, 10, 5]}/>
-              <group visible={currentFloor === 1}>
+          <Canvas
+              className="map-canvas"
+              camera={{ position: [0, 15, 20], fov: 50 }}
+              shadows={{ type: THREE.PCFSoftShadowMap }}
+              dpr={[1, 1.5]}
+              gl={{ alpha: true, antialias: true }}
+              onCreated={({ gl }) => gl.setClearColor(0x000000, 0)}>
+              <hemisphereLight args={["#fffaf3", "#6f6258", 1.15]} />
+              <ambientLight intensity={0.22}/>
+              <directionalLight
+                  castShadow
+                  color="#fff4df"
+                  intensity={2.15}
+                  position={[10, 18, 8]}
+                  shadow-mapSize={[2048, 2048]}
+                  shadow-bias={-0.00015}
+                  shadow-normalBias={0.025}
+                  shadow-camera-left={-28}
+                  shadow-camera-right={28}
+                  shadow-camera-top={28}
+                  shadow-camera-bottom={-28}
+                  shadow-camera-near={1}
+                  shadow-camera-far={55}
+              />
+              <directionalLight color="#dbe7ff" intensity={0.45} position={[-12, 8, -10]} />
+              <ContactShadows
+                  key={`floor-contact-shadows-${currentFloor}`}
+                  position={[0, -0.035, 0]}
+                  scale={62}
+                  opacity={0.3}
+                  color="#4a382d"
+                  blur={2.8}
+                  far={32}
+                  resolution={1024}
+                  frames={45}
+              />
+
+              <FloorLayer active={currentFloor === 1}>
                   <FloorModel1/>
-              </group>
-              <group visible={currentFloor === 2}>
+                  {renderInteractiveZones(1)}
+              </FloorLayer>
+              <FloorLayer active={currentFloor === 2}>
                   <FloorModel2/>
-              </group>
-              {renderInteractiveZones()}
+                  {renderInteractiveZones(2)}
+              </FloorLayer>
 
               {currentFloor === 1 && (
                   <>
@@ -1056,22 +1130,22 @@ const Scene = ({
                   );
               })()}
 
+              <CameraFocus roomId={activeRoom} controlsRef={controlsRef} />
               <CameraControls ref={controlsRef}/>
           </Canvas>
-          <div style={{
-              position: "absolute",
-              left: 20,
-              bottom: 80,
-              display: "flex",
-              flexDirection: "column",
-              gap: "10px",
-          }}>
-              <div className="zoom-controls">
-                  <button className="zoom-button" onClick={zoomIn} aria-label="Zoom in">-</button>
-                  <button className="zoom-button" onClick={zoomOut} aria-label="Zoom out">+</button>
-              </div>
+          <div className="map-controls" aria-label="Map view controls">
+              <button className="map-control-button" onClick={zoomIn} aria-label="Zoom in" title="Zoom in">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+              </button>
+              <button className="map-control-button" onClick={zoomOut} aria-label="Zoom out" title="Zoom out">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14" /></svg>
+              </button>
+              <span className="map-controls-divider" aria-hidden="true" />
+              <button className="map-control-button" onClick={resetView} aria-label="Reset map view" title="Reset view">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.93 4.93A10 10 0 1 1 2 12" /><path d="M4.93 4.93V10H10" /></svg>
+              </button>
           </div>
-      </div>
+      </main>
   );
 };
 
