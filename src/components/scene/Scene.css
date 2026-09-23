@@ -470,3 +470,96 @@
   0%, 100% { box-shadow: 0 8px 26px rgba(4, 73, 132, 0.2), 0 0 0 3px rgba(37, 213, 255, 0.1); }
   50% { box-shadow: 0 8px 28px rgba(4, 73, 132, 0.28), 0 0 0 8px rgba(37, 213, 255, 0.04); }
 }
+
+.gesture-hint { display: none; }
+
+@media (max-width: 768px) {
+  .floor-controls {
+    top: auto;
+    right: auto;
+    bottom: calc(14px + env(safe-area-inset-bottom));
+    left: 14px;
+    transform: none;
+    padding: 4px;
+    border-radius: 16px;
+  }
+
+  .floor-button {
+    min-width: 48px;
+    min-height: 48px;
+    padding: 0 8px;
+    justify-content: center;
+  }
+
+  .floor-button:not(.active) {
+    width: 48px;
+    overflow: hidden;
+    color: transparent;
+    gap: 0;
+  }
+
+  .floor-button:not(.active) .floor-number { color: #5d4c42; }
+
+  .map-controls {
+    right: 14px;
+    bottom: calc(14px + env(safe-area-inset-bottom));
+    padding: 4px;
+  }
+
+  .map-control-button {
+    width: 48px;
+    height: 48px;
+  }
+
+  .room-hover-label,
+  .marker-label {
+    max-width: min(210px, 70vw);
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .gesture-hint {
+    position: fixed;
+    left: 50%;
+    bottom: calc(86px + env(safe-area-inset-bottom));
+    z-index: 25;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    max-width: calc(100vw - 112px);
+    padding: 9px 13px;
+    border: 1px solid rgba(255, 255, 255, 0.75);
+    border-radius: 999px;
+    background: rgba(34, 46, 45, 0.88);
+    color: #ffffff;
+    box-shadow: 0 10px 28px rgba(31, 43, 42, 0.2);
+    backdrop-filter: blur(12px);
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1.25;
+    pointer-events: none;
+    transform: translateX(-50%);
+    animation: gesture-hint-in 4.6s ease both;
+  }
+
+  .gesture-hint svg {
+    flex: 0 0 auto;
+    width: 25px;
+    height: 25px;
+    fill: none;
+    stroke: #8ad4bd;
+    stroke-width: 1.55;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+}
+
+@keyframes gesture-hint-in {
+  0% { opacity: 0; transform: translate(-50%, 10px) scale(0.96); }
+  10%, 82% { opacity: 1; transform: translate(-50%, 0) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, 4px) scale(0.98); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gesture-hint { animation: none; }
+}

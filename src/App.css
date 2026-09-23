@@ -21,6 +21,19 @@
   transform: scale(1);
 }
 
+@media (max-width: 768px) {
+  .map-app-content.has-room-panel .floor-controls,
+  .map-app-content.has-room-panel .map-controls,
+  .map-app-content.has-room-panel .gesture-hint,
+  .map-app-content.has-room-panel .room-hover-label,
+  .map-app-content.has-room-panel .marker-label,
+  .map-app-content.has-room-panel .route-point-label {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+}
+
 html,
 body,
 #root {

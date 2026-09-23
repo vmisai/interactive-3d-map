@@ -690,6 +690,24 @@ search-wrapper:focus-within {
   .menu-section .room-btn { padding: 11px 12px; font-size: 14px; }
 }
 
+@media (max-width: 767px) {
+  .burger-toggle {
+    width: 48px;
+    height: 48px;
+    border-radius: 15px;
+  }
+
+  .top-controls {
+    top: calc(14px + env(safe-area-inset-top));
+    left: 14px;
+  }
+
+  .language-switcher button { min-height: 44px; }
+  .route-mode-btn { min-height: 50px; }
+  .search-result-btn,
+  .menu-section .room-btn { min-height: 48px; }
+}
+
 @media (min-width: 768px) and (max-width: 1024px) {
   .menu-primary-tools .search-wrapper { height: 54px; margin: 0; }
   .menu-primary-tools .search-input { font-size: 17px; }

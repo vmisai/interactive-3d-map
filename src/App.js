@@ -37,7 +37,7 @@ function App() {
   return (
     <Router>
       <div className="App">
-        <div className={`map-app-content ${assetsReady ? "is-ready" : ""}`} aria-hidden={showLoadingScreen}>
+        <div className={`map-app-content ${assetsReady ? "is-ready" : ""} ${activeRoom ? "has-room-panel" : ""}`} aria-hidden={showLoadingScreen}>
             <BurgerMenu
                 onRoomClick={setActiveRoom}
                 selectedRoom={activeRoom}
@@ -61,6 +61,7 @@ function App() {
                 setRouteFrom={setRouteFrom}
                 setIsRouteMode={setIsRouteMode}
                 setIsMenuOpen={setIsMenuOpen}
+                isReady={assetsReady}
             />
             <Sidebar
                 room={activeRoom}

@@ -632,6 +632,9 @@ const Sidebar = ({ room, closeSidebar, onRouteHere }) => {
 
    return (
     <aside className="sidebar" aria-label={t("sidebar.roomDetails")}>
+      <button className="sheet-handle" onClick={closeSidebar} aria-label={t("sidebar.close")}>
+        <span aria-hidden="true" />
+      </button>
       <button className="close-btn" onClick={closeSidebar} aria-label={t("sidebar.close")}>
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2.25" strokeLinecap="round" />

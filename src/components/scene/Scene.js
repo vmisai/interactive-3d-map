@@ -175,8 +175,10 @@ const Scene = ({
                    setActiveRoom, activeRoom, activeFloor, onFloorChange, routeFrom, routeTo,
                    setRouteFrom,
                    setIsRouteMode,
-                   setIsMenuOpen }) => {
+                   setIsMenuOpen,
+                   isReady }) => {
   const [currentFloor, setCurrentFloor] = useState(activeFloor);
+  const [showGestureHint, setShowGestureHint] = useState(false);
   const controlsRef = useRef();
   const [route, setRoute] = useState(null);
   const { t } = useTranslation();
@@ -184,6 +186,16 @@ const Scene = ({
   useEffect(() => {
     setCurrentFloor(activeFloor);
   }, [activeFloor]);
+
+  useEffect(() => {
+    if (!isReady || !window.matchMedia("(max-width: 768px)").matches) return undefined;
+    if (window.sessionStorage.getItem("map-gesture-hint-seen")) return undefined;
+
+    window.sessionStorage.setItem("map-gesture-hint-seen", "true");
+    setShowGestureHint(true);
+    const timer = window.setTimeout(() => setShowGestureHint(false), 4600);
+    return () => window.clearTimeout(timer);
+  }, [isReady]);
 
     useEffect(() => {
         if (!routeFrom || !routeTo) {
@@ -1190,6 +1202,17 @@ const Scene = ({
                   <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.93 4.93A10 10 0 1 1 2 12" /><path d="M4.93 4.93V10H10" /></svg>
               </button>
           </div>
+          {showGestureHint && (
+              <div className="gesture-hint" role="status">
+                  <svg viewBox="0 0 32 32" aria-hidden="true">
+                      <path d="M11 17V8.5a2 2 0 0 1 4 0V15" />
+                      <path d="M15 14V7a2 2 0 0 1 4 0v8" />
+                      <path d="M19 14V9a2 2 0 0 1 4 0v9c0 6-3 10-9 10-4 0-6.5-2-8-5l-2-4a2.1 2.1 0 0 1 3.7-2l2.3 3" />
+                      <path d="M4 6h5M6.5 3.5 4 6l2.5 2.5M28 6h-5M25.5 3.5 28 6l-2.5 2.5" />
+                  </svg>
+                  <span>{t("map.gestureHint")}</span>
+              </div>
+          )}
       </main>
   );
 };

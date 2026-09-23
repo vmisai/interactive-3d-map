@@ -30,9 +30,7 @@
 
 @media (max-width: 768px) {
     .footer {
-        bottom: 12px;
-        max-width: calc(100% - 120px);
-        padding: 7px 12px;
+        display: none;
     }
 
     .footer-logo p {

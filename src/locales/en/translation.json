@@ -11,6 +11,9 @@
     "assets": "{{loaded}} of {{total}} assets ready",
     "starting": "Starting the 3D experience"
   },
+  "map": {
+    "gestureHint": "Drag to rotate · Pinch to zoom"
+  },
   "floor": {
     "first": "First floor",
     "second": "Second floor",
