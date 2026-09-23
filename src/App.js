@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useCallback, useState } from "react";
 import { BrowserRouter as Router } from "react-router-dom";
 import LoadingScreen from "./components/loading/LoadingScreen";
 import Footer from "./components/layout/Footer";
@@ -7,7 +7,8 @@ import Sidebar from "./components/sidebar/Sidebar";
 import BurgerMenu from "./components/layout/BurgerMenu";
 
 function App() {
-  const [isLoading, setIsLoading] = useState(true);
+  const [showLoadingScreen, setShowLoadingScreen] = useState(true);
+  const [assetsReady, setAssetsReady] = useState(false);
   const [activeRoom, setActiveRoom] = useState(null);
   const [activeFloor, setActiveFloor] = useState(1);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -15,10 +16,8 @@ function App() {
   const [routeFrom, setRouteFrom] = useState(null);
   const [routeTo, setRouteTo] = useState(null);
 
-  useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 3000);
-    return () => clearTimeout(timer);
-  }, []);
+  const handleAssetsReady = useCallback(() => setAssetsReady(true), []);
+  const handleLoadingFinished = useCallback(() => setShowLoadingScreen(false), []);
 
   const closeSidebar = () => setActiveRoom(null);
 
@@ -38,10 +37,7 @@ function App() {
   return (
     <Router>
       <div className="App">
-        {isLoading ? (
-          <LoadingScreen />
-        ) : (
-          <>
+        <div className={`map-app-content ${assetsReady ? "is-ready" : ""}`} aria-hidden={showLoadingScreen}>
             <BurgerMenu
                 onRoomClick={setActiveRoom}
                 selectedRoom={activeRoom}
@@ -72,7 +68,12 @@ function App() {
                 onRouteHere={handleRouteHere}
             />
             <Footer />
-          </>
+        </div>
+        {showLoadingScreen && (
+          <LoadingScreen
+            onReady={handleAssetsReady}
+            onFinished={handleLoadingFinished}
+          />
         )}
       </div>
     </Router>

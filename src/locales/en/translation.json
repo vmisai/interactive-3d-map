@@ -2,6 +2,15 @@
   "footer": {
     "title": "Interactive map of Ostroh Academy"
   },
+  "loading": {
+    "logoAlt": "Ostroh Academy logo",
+    "kicker": "National University",
+    "title": "Ostroh Academy",
+    "preparing": "Preparing interactive map",
+    "progressLabel": "Map loading progress",
+    "assets": "{{loaded}} of {{total}} assets ready",
+    "starting": "Starting the 3D experience"
+  },
   "floor": {
     "first": "First floor",
     "second": "Second floor",
