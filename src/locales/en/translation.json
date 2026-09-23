@@ -14,6 +14,28 @@
   "map": {
     "gestureHint": "Drag to rotate · Pinch to zoom"
   },
+  "tutorial": {
+    "step": "Step {{current}} of {{total}}",
+    "skip": "Skip",
+    "next": "Next",
+    "done": "Start exploring",
+    "rotate": {
+      "title": "Rotate the map",
+      "description": "Drag across the map to look around the building from any angle."
+    },
+    "zoom": {
+      "title": "Move closer",
+      "description": "Pinch on a phone, scroll, or use the plus and minus controls to zoom."
+    },
+    "select": {
+      "title": "Select a room",
+      "description": "Tap or click a room to highlight it and open its information panel."
+    },
+    "route": {
+      "title": "Build a route",
+      "description": "Choose Route here from a room, or open the menu to select both endpoints."
+    }
+  },
   "floor": {
     "first": "First floor",
     "second": "Second floor",

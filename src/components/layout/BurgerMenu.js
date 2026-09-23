@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./BurgerMenu.css";
 import { useTranslation } from "react-i18next";
 import { bfs } from "../../navigation/pathfinding";
@@ -45,7 +45,24 @@ const BurgerMenu = ({
     facilities: false,
   });
   const [searchTerm, setSearchTerm] = useState("");
+  const languageTimers = useRef([]);
   const { i18n, t } = useTranslation();
+
+  const changeLanguage = (language) => {
+    if (i18n.language === language) return;
+    languageTimers.current.forEach((timer) => window.clearTimeout(timer));
+    document.documentElement.classList.add("language-transitioning");
+
+    const swapTimer = window.setTimeout(() => {
+      i18n.changeLanguage(language).finally(() => {
+        const finishTimer = window.setTimeout(() => {
+          document.documentElement.classList.remove("language-transitioning");
+        }, 150);
+        languageTimers.current.push(finishTimer);
+      });
+    }, 120);
+    languageTimers.current = [swapTimer];
+  };
 
   const toggleMenu = () => setIsMenuOpen((prev) => !prev);
 
@@ -241,6 +258,11 @@ const BurgerMenu = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [setIsMenuOpen]);
 
+  useEffect(() => () => {
+    languageTimers.current.forEach((timer) => window.clearTimeout(timer));
+    document.documentElement.classList.remove("language-transitioning");
+  }, []);
+
   return (
       <div className="top-controls">
         <button className="burger-toggle" onClick={toggleMenu} aria-label="Menu">
@@ -258,8 +280,8 @@ const BurgerMenu = ({
         {isMenuOpen && (
             <div className="burger-menu">
               <div className="language-switcher">
-                <button className={i18n.language === "ua" ? "active" : ""} onClick={() => i18n.changeLanguage("ua")}>UA</button>
-                <button className={i18n.language === "en" ? "active" : ""} onClick={() => i18n.changeLanguage("en")}>EN</button>
+                <button className={i18n.language === "ua" ? "active" : ""} onClick={() => changeLanguage("ua")}>UA</button>
+                <button className={i18n.language === "en" ? "active" : ""} onClick={() => changeLanguage("en")}>EN</button>
               </div>
 
               <div className="menu-primary-tools">

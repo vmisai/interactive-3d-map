@@ -1,9 +1,89 @@
+.App,
+:root {
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --radius-sm: 9px;
+  --radius-md: 13px;
+  --radius-lg: 17px;
+  --radius-xl: 24px;
+  --icon-stroke: 1.85;
+  --motion-fast: 180ms;
+  --motion-medium: 300ms;
+  --motion-slow: 520ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --focus-color: #006fe6;
+  --shadow-panel: 0 24px 70px rgba(38, 35, 31, 0.18), 0 4px 16px rgba(38, 35, 31, 0.08);
+}
+
 .App {
   position: relative;
   width: 100%;
   height: 100dvh;
   overflow: hidden;
   text-align: center;
+}
+
+:where(button, input, [role="button"], a):focus-visible {
+  outline: 3px solid var(--focus-color) !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 0 2px #ffffff !important;
+}
+
+.burger-toggle,
+.map-control-button,
+.menu-icon-shell,
+.room-meta-item,
+.tutorial-next {
+  border-radius: var(--radius-md);
+}
+
+.search-wrapper,
+.route-mode-btn,
+.search-result-btn,
+.sidebar .route-here-btn,
+.modern-route-card {
+  border-radius: var(--radius-lg);
+}
+
+.burger-menu,
+.sidebar {
+  box-shadow: var(--shadow-panel);
+}
+
+.map-control-button svg,
+.menu-type-icon,
+.sidebar .route-here-btn svg,
+.search-icon,
+.result-arrow,
+.route-point-label svg {
+  stroke-width: var(--icon-stroke);
+}
+
+.burger-menu,
+.sidebar,
+.floor-controls,
+.footer,
+.route-point-label,
+.marker-label,
+.tutorial-card {
+  transition-duration: var(--motion-medium);
+  transition-timing-function: var(--ease-standard);
+}
+
+html.language-transitioning .burger-menu,
+html.language-transitioning .sidebar,
+html.language-transitioning .floor-controls,
+html.language-transitioning .footer,
+html.language-transitioning .route-point-label,
+html.language-transitioning .marker-label,
+html.language-transitioning .tutorial-card {
+  opacity: 0.34;
+  transform: translateY(2px);
 }
 
 .map-app-content {
@@ -48,4 +128,23 @@ body,
 *::before,
 *::after {
   box-sizing: border-box;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+  }
+
+  html.language-transitioning .burger-menu,
+  html.language-transitioning .sidebar,
+  html.language-transitioning .floor-controls,
+  html.language-transitioning .footer,
+  html.language-transitioning .route-point-label,
+  html.language-transitioning .marker-label,
+  html.language-transitioning .tutorial-card {
+    transform: none;
+    transition-duration: 1ms;
+  }
 }

@@ -37,8 +37,12 @@ const Sidebar = ({ room, closeSidebar, onRouteHere }) => {
 
   const { t } = useTranslation();
   const [imageFailed, setImageFailed] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
 
-  useEffect(() => setImageFailed(false), [room]);
+  useEffect(() => {
+    setImageFailed(false);
+    setImageLoaded(false);
+  }, [room]);
 
   if (!room) return null;
   const roomInfo = {
@@ -644,7 +648,16 @@ const Sidebar = ({ room, closeSidebar, onRouteHere }) => {
       <div className="sidebar-scroll-content">
         <div className="room-hero">
           {image && !imageFailed ? (
-            <img src={image} alt={title} onError={() => setImageFailed(true)} />
+            <>
+              {!imageLoaded && <div className="room-image-skeleton" aria-hidden="true" />}
+              <img
+                src={image}
+                alt={title}
+                className={imageLoaded ? "is-loaded" : "is-loading"}
+                onLoad={() => setImageLoaded(true)}
+                onError={() => setImageFailed(true)}
+              />
+            </>
           ) : (
             <div className="room-photo-fallback" role="img" aria-label={t("sidebar.photoUnavailable")}>
               <svg viewBox="0 0 24 24" aria-hidden="true">

@@ -1,10 +1,12 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { BrowserRouter as Router } from "react-router-dom";
+import "./App.css";
 import LoadingScreen from "./components/loading/LoadingScreen";
 import Footer from "./components/layout/Footer";
 import Scene from "./components/scene/Scene";
 import Sidebar from "./components/sidebar/Sidebar";
 import BurgerMenu from "./components/layout/BurgerMenu";
+import MapTutorial from "./components/tutorial/MapTutorial";
 
 function App() {
   const [showLoadingScreen, setShowLoadingScreen] = useState(true);
@@ -15,9 +17,21 @@ function App() {
   const [isRouteMode, setIsRouteMode] = useState(false);
   const [routeFrom, setRouteFrom] = useState(null);
   const [routeTo, setRouteTo] = useState(null);
+  const [showTutorial, setShowTutorial] = useState(false);
 
   const handleAssetsReady = useCallback(() => setAssetsReady(true), []);
   const handleLoadingFinished = useCallback(() => setShowLoadingScreen(false), []);
+
+  useEffect(() => {
+    if (showLoadingScreen || !assetsReady || window.localStorage.getItem("map-tutorial-complete-v1")) return undefined;
+    const timer = window.setTimeout(() => setShowTutorial(true), 420);
+    return () => window.clearTimeout(timer);
+  }, [assetsReady, showLoadingScreen]);
+
+  const finishTutorial = useCallback(() => {
+    window.localStorage.setItem("map-tutorial-complete-v1", "true");
+    setShowTutorial(false);
+  }, []);
 
   const closeSidebar = () => setActiveRoom(null);
 
@@ -61,7 +75,6 @@ function App() {
                 setRouteFrom={setRouteFrom}
                 setIsRouteMode={setIsRouteMode}
                 setIsMenuOpen={setIsMenuOpen}
-                isReady={assetsReady}
             />
             <Sidebar
                 room={activeRoom}
@@ -69,6 +82,7 @@ function App() {
                 onRouteHere={handleRouteHere}
             />
             <Footer />
+            {showTutorial && <MapTutorial onClose={finishTutorial} />}
         </div>
         {showLoadingScreen && (
           <LoadingScreen

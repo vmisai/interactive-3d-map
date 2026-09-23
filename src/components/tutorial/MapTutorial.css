@@ -1,0 +1,136 @@
+.tutorial-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: grid;
+  place-items: center;
+  padding: var(--space-5);
+  background: rgba(30, 36, 35, 0.22);
+  backdrop-filter: blur(3px);
+  animation: tutorial-backdrop-in var(--motion-medium) var(--ease-out) both;
+}
+
+.tutorial-card {
+  position: relative;
+  width: min(370px, calc(100vw - 32px));
+  padding: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.78);
+  border-radius: var(--radius-xl);
+  background: rgba(252, 249, 246, 0.96);
+  color: #29312f;
+  box-shadow: var(--shadow-panel);
+  text-align: left;
+  animation: tutorial-card-in var(--motion-slow) var(--ease-out) both;
+}
+
+.tutorial-skip {
+  position: absolute;
+  top: 17px;
+  right: 18px;
+  min-height: 36px;
+  padding: 0 8px;
+  border: 0;
+  background: transparent;
+  color: #596561;
+  font-size: 12px;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.tutorial-icon {
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  margin-bottom: var(--space-5);
+  border-radius: var(--radius-lg);
+  background: #e8f5f0;
+  color: #126d52;
+}
+
+.tutorial-icon svg {
+  width: 29px;
+  height: 29px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: var(--icon-stroke);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.tutorial-step {
+  margin: 0 0 var(--space-2);
+  color: #126d52;
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.tutorial-card h2 {
+  margin: 0;
+  color: #202826;
+  font-size: 23px;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+}
+
+.tutorial-description {
+  min-height: 48px;
+  margin: var(--space-3) 0 var(--space-6);
+  color: #56615e;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.tutorial-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.tutorial-dots { display: flex; gap: 6px; }
+.tutorial-dots span {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: #cad2cf;
+  transition: width var(--motion-fast) var(--ease-standard), background var(--motion-fast) var(--ease-standard);
+}
+.tutorial-dots span.active { width: 18px; background: #16815f; }
+
+.tutorial-next {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 46px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: #263d36;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform var(--motion-fast) var(--ease-standard), background var(--motion-fast) var(--ease-standard);
+}
+
+.tutorial-next:hover { background: #172a24; transform: translateY(-1px); }
+.tutorial-next svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: var(--icon-stroke); }
+
+@keyframes tutorial-backdrop-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes tutorial-card-in { from { opacity: 0; transform: translateY(14px) scale(0.98); } to { opacity: 1; transform: none; } }
+
+@media (max-width: 768px) {
+  .tutorial-layer { place-items: end center; padding: 14px 12px calc(14px + env(safe-area-inset-bottom)); }
+  .tutorial-card { padding: 24px 22px 20px; border-radius: var(--radius-xl); }
+  .tutorial-description { min-height: 44px; margin-bottom: var(--space-5); }
+  .tutorial-next { min-height: 50px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tutorial-layer,
+  .tutorial-card { animation-duration: 1ms; }
+}

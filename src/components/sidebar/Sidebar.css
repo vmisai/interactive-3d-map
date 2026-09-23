@@ -72,6 +72,24 @@
   height: 100%;
   display: block;
   object-fit: cover;
+  opacity: 1;
+  transition: opacity var(--motion-medium) var(--ease-standard), transform var(--motion-slow) var(--ease-out);
+}
+
+.room-hero > img.is-loading { opacity: 0; transform: scale(1.015); }
+.room-hero > img.is-loaded { opacity: 1; transform: scale(1); }
+
+.room-image-skeleton {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(100deg, transparent 28%, rgba(255, 255, 255, 0.52) 45%, transparent 62%) 130% 0 / 220% 100% no-repeat,
+    linear-gradient(145deg, #e9dfd7, #d8cbc1);
+  animation: room-image-shimmer 1.35s ease-in-out infinite;
+}
+
+@keyframes room-image-shimmer {
+  to { background-position: -120% 0, 0 0; }
 }
 
 .room-hero::after {
@@ -380,4 +398,6 @@
   .sidebar {
     animation-duration: 1ms;
   }
+
+  .room-image-skeleton { animation: none; }
 }
