@@ -27,6 +27,14 @@ function App() {
     setRouteTo(to);
   };
 
+  const handleRouteHere = (roomId) => {
+    setRouteFrom(null);
+    setRouteTo(roomId);
+    setIsRouteMode(true);
+    setIsMenuOpen(true);
+    setActiveRoom(null);
+  };
+
   return (
     <Router>
       <div className="App">
@@ -58,7 +66,11 @@ function App() {
                 setIsRouteMode={setIsRouteMode}
                 setIsMenuOpen={setIsMenuOpen}
             />
-            <Sidebar room={activeRoom} closeSidebar={closeSidebar} />
+            <Sidebar
+                room={activeRoom}
+                closeSidebar={closeSidebar}
+                onRouteHere={handleRouteHere}
+            />
             <Footer />
           </>
         )}

@@ -147,138 +147,145 @@
   z-index: 1 !important;
 }
 
-.modern-pin-container {
+.room-hover-label {
+  position: relative;
+  padding: 7px 11px;
+  color: #f8fbfb;
+  background: rgba(31, 54, 59, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.38);
+  border-radius: 10px;
+  box-shadow: 0 8px 22px rgba(28, 43, 46, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.1px;
+  white-space: nowrap;
+  animation: room-label-in 160ms ease-out both;
+}
+
+.room-hover-label::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -5px;
+  width: 9px;
+  height: 9px;
+  background: rgba(31, 54, 59, 0.9);
+  border-right: 1px solid rgba(255, 255, 255, 0.38);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.38);
+  transform: translateX(-50%) rotate(45deg);
+}
+
+@keyframes room-label-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.map-marker {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #ffffff;
   cursor: pointer;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   user-select: none;
-  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: transform 180ms ease;
 }
 
-.modern-pin-container:hover {
-  transform: scale(1.1) translateY(-4px);
+.map-marker:hover,
+.map-marker:focus-visible {
+  z-index: 2;
+  outline: none;
+  transform: translateY(-3px) scale(1.06);
 }
 
-.modern-pin {
+.marker-symbol {
   position: relative;
-  width: 36px;
-  height: 36px;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
+  width: 35px;
+  height: 35px;
+  border: 2px solid rgba(255, 255, 255, 0.92);
+  box-shadow: 0 7px 18px rgba(22, 35, 48, 0.24);
 }
 
-.modern-pin-icon {
-  width: 20px;
-  height: 20px;
-  object-fit: contain;
+.marker-symbol svg {
+  width: 19px;
+  height: 19px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
-.modern-pin-label {
-  color: #f6eeea;
-  padding: 4px 10px;
-  border-radius: 8px;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  font-size: 11px;
+.marker-entrance .marker-symbol {
+  border-radius: 50% 50% 50% 12px;
+  background: #16815f;
+  transform: rotate(-45deg);
+}
+
+.marker-entrance .marker-symbol svg { transform: rotate(45deg); }
+
+.marker-stairs .marker-symbol {
+  border-radius: 11px;
+  background: #4e5fc7;
+}
+
+.marker-label {
+  position: absolute;
+  top: 43px;
+  left: 50%;
+  padding: 5px 9px;
+  border: 1px solid rgba(255, 255, 255, 0.74);
+  border-radius: 999px;
+  background: rgba(24, 35, 48, 0.9);
+  color: #ffffff;
+  font-size: 10px;
   font-weight: 700;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.02em;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -3px) scale(0.96);
+  transition: opacity 160ms ease, transform 160ms ease;
+  visibility: hidden;
   white-space: nowrap;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 6px 16px rgba(22, 35, 48, 0.18);
+  backdrop-filter: blur(8px);
 }
 
-.pin-variant-entrance {
-  flex-direction: column;
+.marker-label.is-visible {
+  opacity: 1;
+  transform: translate(-50%, 0) scale(1);
+  visibility: visible;
 }
 
-.pin-variant-entrance .modern-pin {
-  background-color: #ffffff !important;
-  border-radius: 50%;
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2), 0 0 0 2.5px #26160d !important;
-}
-
-.pin-variant-entrance .modern-pin::after {
-  content: '';
+.map-marker.is-important .marker-symbol::after {
+  content: "";
   position: absolute;
-  bottom: -5px;
-  left: 50%;
-  transform: translateX(-50%) rotate(45deg);
-  width: 10px;
-  height: 10px;
-  background-color: #ffffff;
-  border-right: 2.5px solid #26160d;
-  border-bottom: 2.5px solid #26160d;
-  z-index: -1;
+  inset: -6px;
+  border: 2px solid rgba(22, 129, 95, 0.34);
+  border-radius: inherit;
+  animation: important-marker-pulse 2.5s ease-out infinite;
 }
 
-.pin-variant-entrance .modern-pin-icon {
-  filter: opacity(0.9) drop-shadow(0px 0px 0px #26160d);
-}
-
-.pin-variant-entrance .modern-pin-label {
-  margin-top: 9px;
-  background: #f6eeea !important;
-  color: #26160d !important;
-  font-weight: 800;
-  border: 1.5px solid #26160d;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
-  position: relative;
-}
-
-.pin-variant-entrance .modern-pin-label::after {
-  content: '';
-  position: absolute;
-  top: -5px;
-  left: 50%;
-  transform: translateX(-50%) rotate(45deg);
-  width: 8px;
-  height: 8px;
-  background: #f6eeea;
-  border-left: 1.5px solid #26160d;
-  border-top: 1.5px solid #26160d;
-}
-
-.pin-variant-stairs {
-  flex-direction: column-reverse;
-}
-
-.pin-variant-stairs .modern-pin {
-  background-color: #26160d !important;
-  border-radius: 50% !important;
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25), 0 0 0 2.5px #ffffff !important;
-}
-
-.pin-variant-stairs .modern-pin-label {
-  margin-top: 0;
-  margin-bottom: 9px;
-  background: #f6eeea !important;
-  color: #26160d !important;
-  font-weight: 800;
-  border: 1.5px solid #26160d;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
-  position: relative;
-}
-.pin-variant-stairs .modern-pin-label::after {
-  content: '';
-  position: absolute;
-  bottom: -5px;
-  left: 50%;
-  transform: translateX(-50%) rotate(45deg);
-  width: 8px;
-  height: 8px;
-  background: #f6eeea;
-  border-right: 1.5px solid #26160d;
-  border-bottom: 1.5px solid #26160d;
-}
-
-.pin-variant-stairs .modern-pin::after {
-  display: none !important;
-}
-
-.pin-variant-stairs .modern-pin-icon {
-  filter: brightness(0) invert(1) !important;
-  width: 18px;
-  height: 18px;
+@keyframes important-marker-pulse {
+  0%, 35% { opacity: 0.8; transform: scale(0.82); }
+  75%, 100% { opacity: 0; transform: scale(1.28); }
 }
 
 @media (max-width: 768px) {
@@ -398,4 +405,68 @@
     padding: 12px 16px;
     font-size: 15px;
   }
+}
+
+.route-point-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  border-radius: 999px;
+  color: #ffffff;
+  font: 700 11px/1.1 Inter, sans-serif;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  box-shadow: 0 7px 22px rgba(24, 40, 57, 0.2);
+  backdrop-filter: blur(8px);
+}
+
+.route-point-label svg {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.route-point-start { background: rgba(12, 155, 91, 0.9); }
+.route-point-end { background: rgba(224, 68, 42, 0.92); }
+
+.route-floor-change {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.94);
+  color: #172334;
+  font: 750 11px/1.1 Inter, sans-serif;
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: 0 8px 26px rgba(4, 73, 132, 0.24), 0 0 0 4px rgba(37, 213, 255, 0.13);
+  animation: route-floor-pulse 2s ease-in-out infinite;
+}
+
+.route-floor-change:hover {
+  transform: translateY(-1px);
+  background: #ffffff;
+}
+
+.route-floor-change svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: #087ff5;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+@keyframes route-floor-pulse {
+  0%, 100% { box-shadow: 0 8px 26px rgba(4, 73, 132, 0.2), 0 0 0 3px rgba(37, 213, 255, 0.1); }
+  50% { box-shadow: 0 8px 28px rgba(4, 73, 132, 0.28), 0 0 0 8px rgba(37, 213, 255, 0.04); }
 }

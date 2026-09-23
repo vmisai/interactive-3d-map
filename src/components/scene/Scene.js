@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import InteractiveZone from "./InteractiveZone";
 import { useGLTF } from "@react-three/drei";
 import { useTranslation } from "react-i18next";
@@ -11,6 +11,7 @@ import { bfs } from "../../navigation/pathfinding";
 import RoutePath from "../../navigation/RoutePath";
 import { ContactShadows, Html, Billboard } from "@react-three/drei";
 import { navigationNodes } from "../../navigation/navigationNodes";
+import { getNodeFloor } from "../../navigation/routeUtils";
 import { CameraFocus, FloorLayer } from "./SceneEffects";
 
 const prepareTexture = (texture, isColorTexture = false) => {
@@ -39,13 +40,6 @@ const tuneFloorMaterials = (scene) => {
             material.needsUpdate = true;
         });
     });
-};
-
-const getNodeFloor = (nodeId, nodesObj) => {
-    const node = nodesObj[nodeId];
-    if (!node) return 1;
-    const yCoord = node[1];
-    return yCoord > 0.5 ? 2 : 1;
 };
 
 const FloorModel1 = () => {
@@ -116,7 +110,37 @@ const FloorModel2 = () => {
   return <primitive object={scene} scale={0.05} />;
 };
 
-const MapIconMarker = ({ position, iconUrl, label, onClick, variant = "entrance" }) => {
+const MarkerGlyph = ({ variant }) => variant === "stairs" ? (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M4 18h4v-4h4v-4h4V6h4" />
+        <path d="m16 6 4-3 3 3" />
+    </svg>
+) : (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M5 20V5h10v15" />
+        <path d="M9 12h11M17 9l3 3-3 3" />
+    </svg>
+);
+
+const MapIconMarker = ({ position, label, onClick, variant = "entrance", important = false }) => {
+    const { camera } = useThree();
+    const [isHovered, setIsHovered] = useState(false);
+    const [isNearby, setIsNearby] = useState(false);
+    const sampleFrame = useRef(0);
+    const worldPosition = useMemo(
+        () => new THREE.Vector3(position[0], position[1] + 0.2, position[2]),
+        [position]
+    );
+
+    useFrame(() => {
+        sampleFrame.current += 1;
+        if (sampleFrame.current % 12 !== 0) return;
+        const nearby = camera.position.distanceTo(worldPosition) < 10.5;
+        setIsNearby((current) => current === nearby ? current : nearby);
+    });
+
+    const showLabel = isHovered || isNearby;
+
     return (
         <group position={[position[0], position[1] + 0.2, position[2]]}>
             <Billboard follow={true}>
@@ -128,12 +152,19 @@ const MapIconMarker = ({ position, iconUrl, label, onClick, variant = "entrance"
                         zIndex: 1
                     }}
                 >
-                    <div className={`modern-pin-container pin-variant-${variant}`} onClick={onClick}>
-                        <div className="modern-pin">
-                            <img src={iconUrl} alt={label} className="modern-pin-icon"/>
-                        </div>
-                        <div className="modern-pin-label">{label}</div>
-                    </div>
+                    <button
+                        type="button"
+                        className={`map-marker marker-${variant} ${important ? "is-important" : ""}`}
+                        onClick={onClick}
+                        onMouseEnter={() => setIsHovered(true)}
+                        onMouseLeave={() => setIsHovered(false)}
+                        onFocus={() => setIsHovered(true)}
+                        onBlur={() => setIsHovered(false)}
+                        aria-label={label}
+                    >
+                        <span className="marker-symbol"><MarkerGlyph variant={variant} /></span>
+                        <span className={`marker-label ${showLabel ? "is-visible" : ""}`} aria-hidden={!showLabel}>{label}</span>
+                    </button>
                 </Html>
             </Billboard>
         </group>
@@ -161,7 +192,10 @@ const Scene = ({
         }
         const path = bfs(routeFrom, routeTo);
         setRoute(path);
-    }, [routeFrom, routeTo]);
+        if (path?.length) {
+            onFloorChange(getNodeFloor(path[0]));
+        }
+    }, [routeFrom, routeTo, onFloorChange]);
 
     const handleEntranceClick = (entranceId) => {
         setRouteFrom(entranceId);
@@ -1049,83 +1083,94 @@ const Scene = ({
                   <>
                      <MapIconMarker
                           position={[8, 0.7, 8.5]}
-                          iconUrl="/icon/exit.png"
                           label={t("labels.main_entrance")}
                           onClick={() => handleEntranceClick("main_entrance")}
+                          important
                       />
                       <MapIconMarker
                           position={[10.7, 0.7, 2.2]}
-                          iconUrl="/icon/exit.png"
                           label={t("labels.side_entrance_1")}
                           onClick={() => handleEntranceClick("side_entrance_1")}
                       />
                       <MapIconMarker
                           position={[2, 0.7, 6]}
-                          iconUrl="/icon/exit.png"
                           label={t("labels.side_entrance_2")}
                           onClick={() => handleEntranceClick("side_entrance_2")}
                       />
                       <MapIconMarker
                           position={[-4, 0.7, 6.5]}
-                          iconUrl="/icon/exit.png"
                           label={t("labels.side_entrance_3")}
                           onClick={() => handleEntranceClick("side_entrance_3")}
                       />
                       <MapIconMarker
                           position={[13.2, 0.7, -16.5]}
-                          iconUrl="/icon/exit.png"
                           label={t("labels.side_entrance_4")}
                           onClick={() => handleEntranceClick("side_entrance_4")}
                       />
                       <MapIconMarker
                           position={[9, 0.7, -18.5]}
-                          iconUrl="/icon/exit.png"
                           label={t("labels.side_entrance_5")}
                           onClick={() => handleEntranceClick("side_entrance_5")}
                       />
-                      <MapIconMarker position={[10.5, 0.7, 13.8]} iconUrl="/icon/stairs.png" label={t("labels.stairs")} onClick={() => onFloorChange(2)} variant="stairs" />
-                      <MapIconMarker position={[7, 0.7, 5.5]} iconUrl="/icon/stairs.png" label={t("labels.stairs")} onClick={() => onFloorChange(2)} variant="stairs" />
-                      <MapIconMarker position={[12.5, 0.7, 0]} iconUrl="/icon/stairs.png" label={t("labels.stairs")} onClick={() => onFloorChange(2)} variant="stairs" />
-                      <MapIconMarker position={[12.5, 0.7, -7]} iconUrl="/icon/stairs.png" label={t("labels.stairs")} onClick={() => onFloorChange(2)} variant="stairs" />
-                      <MapIconMarker position={[10.2, 0.7, -13.5]} iconUrl="/icon/stairs.png" label={t("labels.stairs")} onClick={() => onFloorChange(2)} variant="stairs" />
-                      <MapIconMarker position={[10.5, 0.7, -19]} iconUrl="/icon/stairs.png" label={t("labels.stairs")} onClick={() => onFloorChange(2)} variant="stairs" />
-                     <MapIconMarker position={[4, 0.7, 5.5]} iconUrl="/icon/stairs.png" label={t("labels.stairs")} onClick={() => onFloorChange(2)} variant="stairs" />
+                      <MapIconMarker position={[10.5, 0.7, 13.8]} label={t("labels.stairs")} onClick={() => onFloorChange(2)} variant="stairs" />
+                      <MapIconMarker position={[7, 0.7, 5.5]} label={t("labels.stairs")} onClick={() => onFloorChange(2)} variant="stairs" />
+                      <MapIconMarker position={[12.5, 0.7, 0]} label={t("labels.stairs")} onClick={() => onFloorChange(2)} variant="stairs" />
+                      <MapIconMarker position={[12.5, 0.7, -7]} label={t("labels.stairs")} onClick={() => onFloorChange(2)} variant="stairs" />
+                      <MapIconMarker position={[10.2, 0.7, -13.5]} label={t("labels.stairs")} onClick={() => onFloorChange(2)} variant="stairs" />
+                      <MapIconMarker position={[10.5, 0.7, -19]} label={t("labels.stairs")} onClick={() => onFloorChange(2)} variant="stairs" />
+                     <MapIconMarker position={[4, 0.7, 5.5]} label={t("labels.stairs")} onClick={() => onFloorChange(2)} variant="stairs" />
                 </>
               )}
 
               {currentFloor === 2 && (
                   <>
-                      <MapIconMarker position={[10.5, 0.9, 13.8]} iconUrl="/icon/stairs.png" label={t("labels.stairs")} onClick={() => onFloorChange(2)} variant="stairs" />
-                      <MapIconMarker position={[7, 0.9, 5.5]} iconUrl="/icon/stairs.png" label={t("labels.stairs")} onClick={() => onFloorChange(2)} variant="stairs" />
-                      <MapIconMarker position={[12.5, 0.9, 0]} iconUrl="/icon/stairs.png" label={t("labels.stairs")} onClick={() => onFloorChange(2)} variant="stairs" />
-                      <MapIconMarker position={[12.5, 0.9, -7]} iconUrl="/icon/stairs.png" label={t("labels.stairs")} onClick={() => onFloorChange(2)} variant="stairs" />
-                      <MapIconMarker position={[10.2, 0.9, -13.5]} iconUrl="/icon/stairs.png" label={t("labels.stairs")} onClick={() => onFloorChange(2)} variant="stairs" />
-                      <MapIconMarker position={[10.5, 0.9, -19]} iconUrl="/icon/stairs.png" label={t("labels.stairs")} onClick={() => onFloorChange(2)} variant="stairs" />
-                      <MapIconMarker position={[4, 0.9, 5.5]} iconUrl="/icon/stairs.png" label={t("labels.stairs")} onClick={() => onFloorChange(2)} variant="stairs" />
-                      <MapIconMarker position={[-2.2, 0.9, -1]} iconUrl="/icon/stairs.png" label={t("labels.stairs")} onClick={() => onFloorChange(2)} variant="stairs" />
-                      <MapIconMarker position={[-5.5, 0.9, -1]} iconUrl="/icon/stairs.png" label={t("labels.stairs")} onClick={() => onFloorChange(2)} variant="stairs" />
+                      <MapIconMarker position={[10.5, 0.9, 13.8]} label={t("labels.stairs")} onClick={() => onFloorChange(1)} variant="stairs" />
+                      <MapIconMarker position={[7, 0.9, 5.5]} label={t("labels.stairs")} onClick={() => onFloorChange(1)} variant="stairs" />
+                      <MapIconMarker position={[12.5, 0.9, 0]} label={t("labels.stairs")} onClick={() => onFloorChange(1)} variant="stairs" />
+                      <MapIconMarker position={[12.5, 0.9, -7]} label={t("labels.stairs")} onClick={() => onFloorChange(1)} variant="stairs" />
+                      <MapIconMarker position={[10.2, 0.9, -13.5]} label={t("labels.stairs")} onClick={() => onFloorChange(1)} variant="stairs" />
+                      <MapIconMarker position={[10.5, 0.9, -19]} label={t("labels.stairs")} onClick={() => onFloorChange(1)} variant="stairs" />
+                      <MapIconMarker position={[4, 0.9, 5.5]} label={t("labels.stairs")} onClick={() => onFloorChange(1)} variant="stairs" />
+                      <MapIconMarker position={[-2.2, 0.9, -1]} label={t("labels.stairs")} onClick={() => onFloorChange(1)} variant="stairs" />
+                      <MapIconMarker position={[-5.5, 0.9, -1]} label={t("labels.stairs")} onClick={() => onFloorChange(1)} variant="stairs" />
 
                   </>
               )}
 
               {(() => {
                   if (!route || route.length === 0) return null;
-                  const currentFloorNodes = route.filter(nodeId => getNodeFloor(nodeId, navigationNodes) === currentFloor);
+                  const currentFloorNodes = route
+                      .map((nodeId, index) => ({ nodeId, index }))
+                      .filter(({ nodeId }) => getNodeFloor(nodeId) === currentFloor && navigationNodes[nodeId]);
                   if (currentFloorNodes.length < 2) return null;
-                  const pathCoordinates = currentFloorNodes.map(nodeId => {
+                  const pathCoordinates = currentFloorNodes.map(({ nodeId }) => {
                       const coords = navigationNodes[nodeId];
                       if (!coords) return [0, 0, 0];
                       return [coords[0], coords[1] + 0.02, coords[2]];
                   });
 
-                  const isStartOnThisFloor = getNodeFloor(route[0], navigationNodes) === currentFloor;
-                  const isEndOnThisFloor = getNodeFloor(route[route.length - 1], navigationNodes) === currentFloor;
+                  const isStartOnThisFloor = getNodeFloor(route[0]) === currentFloor;
+                  const isEndOnThisFloor = getNodeFloor(route[route.length - 1]) === currentFloor;
+                  const finalVisibleNode = currentFloorNodes[currentFloorNodes.length - 1];
+                  const nextNodeId = route[finalVisibleNode.index + 1];
+                  const nextFloor = nextNodeId ? getNodeFloor(nextNodeId) : null;
+                  const floorChange = nextFloor && nextFloor !== currentFloor
+                      ? {
+                          position: navigationNodes[finalVisibleNode.nodeId],
+                          nextFloor,
+                          label: t("route.changeFloor", { floor: nextFloor }),
+                      }
+                      : null;
 
                   return (
                       <RoutePath
                           path={pathCoordinates}
                           showStartCircle={isStartOnThisFloor}
                           showEndPin={isEndOnThisFloor}
+                          startLabel={t("route.start")}
+                          destinationLabel={t("route.destination")}
+                          floorChange={floorChange}
+                          onFloorChange={onFloorChange}
                       />
                   );
               })()}

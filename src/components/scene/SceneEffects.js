@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { createContext, useEffect, useRef } from "react";
 import * as THREE from "three";
 import { useFrame, useThree } from "@react-three/fiber";
 import { navigationNodes } from "../../navigation/navigationNodes";
@@ -10,6 +10,8 @@ const forEachMaterial = (object, callback) => {
     materials.forEach(callback);
   });
 };
+
+export const FloorInteractionContext = createContext(true);
 
 export const FloorLayer = ({ active, children }) => {
   const groupRef = useRef();
@@ -40,7 +42,11 @@ export const FloorLayer = ({ active, children }) => {
     });
   });
 
-  return <group ref={groupRef}>{children}</group>;
+  return (
+    <FloorInteractionContext.Provider value={active}>
+      <group ref={groupRef}>{children}</group>
+    </FloorInteractionContext.Provider>
+  );
 };
 
 export const CameraFocus = ({ roomId, controlsRef }) => {

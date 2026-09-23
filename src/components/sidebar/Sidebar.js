@@ -1,10 +1,45 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./Sidebar.css";
 import { useTranslation } from "react-i18next";
+import { navigationNodes } from "../../navigation/navigationNodes";
 
-const Sidebar = ({ room, closeSidebar }) => {
+const ADMIN_ROOMS = new Set([
+  "rector", "academiccouncil", "prorector", "assistantrector",
+  "rectorsroom", "ViceRectorResearch", "vivat",
+]);
 
-  const { t, i18n } = useTranslation();
+const ECONOMIC_ROOMS = new Set(["def", "dekanef", "dekan_economic", "dekanat_economic"]);
+
+const SECOND_FLOOR_ROOMS = new Set([
+  "a6", "a7", "a7a", "a9", "a10", "a11", "a12", "a13", "a14",
+  "a18", "a19", "a20", "a21", "a22", "a23", "a29", "a30", "a31",
+  "a32", "a38", "a39", "a41", "a43", "a61", "a62", "a63", "a64",
+  "a65", "a66", "a67", "a68", "a69", "a70", "a71", "a72", "a73",
+  "a74", "careercounselor", "hall", "idzdn", "kf", "khistory",
+  "kinternationalrelations", "kL", "kpolit", "kreligions", "loft",
+  "methoddepartment", "p3", "p4", "skladtzn", "tzn",
+]);
+
+const humanizeRoomId = (roomId) => roomId
+  .replace(/[()]/g, " ")
+  .replace(/[_-]+/g, " ")
+  .replace(/\s+/g, " ")
+  .trim()
+  .replace(/\b\w/g, (letter) => letter.toUpperCase());
+
+const getRoomFloor = (roomId) => {
+  const node = navigationNodes[roomId];
+  if (node) return node[1] > 0.5 ? 2 : 1;
+  return SECOND_FLOOR_ROOMS.has(roomId) ? 2 : 1;
+};
+
+const Sidebar = ({ room, closeSidebar, onRouteHere }) => {
+
+  const { t } = useTranslation();
+  const [imageFailed, setImageFailed] = useState(false);
+
+  useEffect(() => setImageFailed(false), [room]);
+
   if (!room) return null;
   const roomInfo = {
     a1: {
@@ -173,7 +208,7 @@ const Sidebar = ({ room, closeSidebar }) => {
       text: "",
     },
     clerk: {
-      title: "rooms.auditorium.clerk",
+      title: t("rooms.auditorium.clerk"),
       image: "",
       text: "",
     },
@@ -572,58 +607,103 @@ const Sidebar = ({ room, closeSidebar }) => {
 
   };
 
-   const { title, image, text, features = [] } = roomInfo[room] || {};
+   const roomEntry = roomInfo[room] || {};
+   const title = roomEntry.title || humanizeRoomId(room);
+   const image = roomEntry.image;
+   const text = roomEntry.text;
+   const features = roomEntry.features || [];
+   const floor = getRoomFloor(room);
+   const roomNumberMatch = room.match(/^a(\d+[a-z]?)$/i);
+   const roomNumber = roomNumberMatch
+     ? `№${roomNumberMatch[1].toUpperCase()}`
+     : /^[p]\d+$/i.test(room)
+       ? room.toUpperCase()
+       : t("sidebar.notAssigned");
+   const category = ADMIN_ROOMS.has(room)
+     ? t("sidebar.categories.administration")
+     : ECONOMIC_ROOMS.has(room)
+       ? t("sidebar.categories.economic")
+       : /^a\d/i.test(room) || /^p\d/i.test(room)
+         ? t("sidebar.categories.auditorium")
+         : t("sidebar.categories.service");
+   const equipment = features.length
+     ? features.map((feature) => t(`rooms.features.${feature}`)).join(", ")
+     : t("sidebar.equipmentFallback");
 
    return (
-    <div className="sidebar">
-      <button className="close-btn" onClick={closeSidebar} aria-label="Close sidebar">
-  <svg
-    width="20"
-    height="20"
-    viewBox="0 0 24 24"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-        d="M18 6L6 18M6 6L18 18"
-        stroke="currentColor"
-        strokeWidth="2.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-    />
-  </svg>
-</button>
+    <aside className="sidebar" aria-label={t("sidebar.roomDetails")}>
+      <button className="close-btn" onClick={closeSidebar} aria-label={t("sidebar.close")}>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2.25" strokeLinecap="round" />
+        </svg>
+      </button>
 
-      {title && <h2>{title}</h2>}
-      {features.length > 0 && (
-          <div className="sidebar-features">
-            {features.includes("projector") && (
-                <span className="feature-badge badge-projector">
-              <svg className="badge-svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M2 12h20M2 16h20M6 12v4M18 12v4M2 8a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8zM7 19h10" />
+      <div className="sidebar-scroll-content">
+        <div className="room-hero">
+          {image && !imageFailed ? (
+            <img src={image} alt={title} onError={() => setImageFailed(true)} />
+          ) : (
+            <div className="room-photo-fallback" role="img" aria-label={t("sidebar.photoUnavailable")}>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4 5.5A1.5 1.5 0 0 1 5.5 4h13A1.5 1.5 0 0 1 20 5.5v13a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18.5z" />
+                <circle cx="9" cy="9" r="1.5" />
+                <path d="m5 17 4.5-4.5 3 3 2-2L20 19" />
               </svg>
-                  {t("rooms.features.projector")}
-            </span>
-            )}
-            {features.includes("pc") && (
-                <span className="feature-badge badge-pc">
-              <svg className="badge-svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <rect x="2" y="3" width="20" height="12" rx="2" />
-                <path d="M12 15v4M7 21h10" />
-              </svg>
-                  {t("rooms.features.pc")}
-            </span>
-            )}
+              <span>{t("sidebar.photoUnavailable")}</span>
+            </div>
+          )}
+          <span className="room-floor-chip">{floor === 1 ? t("floor.first") : t("floor.second")}</span>
+        </div>
+
+        <header className="room-card-header">
+          <p className="room-category-eyebrow">{category}</p>
+          <h2>{title}</h2>
+        </header>
+
+        <dl className="room-meta-grid">
+          <div className="room-meta-item">
+            <dt>{t("sidebar.roomNumber")}</dt>
+            <dd>{roomNumber}</dd>
           </div>
-      )}
-      {image && <img src={image} alt={title} />}
-      {text && (
-        <div
-          className="sidebar-text"
-          dangerouslySetInnerHTML={{ __html: text }}
-        />
-      )}
-    </div>
+          <div className="room-meta-item">
+            <dt>{t("sidebar.category")}</dt>
+            <dd>{category}</dd>
+          </div>
+          <div className="room-meta-item">
+            <dt>{t("sidebar.floor")}</dt>
+            <dd>{floor === 1 ? t("floor.first") : t("floor.second")}</dd>
+          </div>
+          <div className="room-meta-item room-meta-wide">
+            <dt>{t("sidebar.equipment")}</dt>
+            <dd>{equipment}</dd>
+          </div>
+          <div className="room-meta-item room-meta-wide">
+            <dt>{t("sidebar.accessibility")}</dt>
+            <dd>{t("sidebar.accessibilityFallback")}</dd>
+          </div>
+        </dl>
+
+        <section className="room-description">
+          <h3>{t("sidebar.about")}</h3>
+          {text ? (
+            <div className="sidebar-text" dangerouslySetInnerHTML={{ __html: text }} />
+          ) : (
+            <p className="room-description-fallback">{t("sidebar.descriptionFallback")}</p>
+          )}
+        </section>
+      </div>
+
+      <div className="sidebar-actions">
+        <button className="route-here-btn" onClick={() => onRouteHere(room)}>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="6" cy="18" r="2" />
+            <circle cx="18" cy="6" r="2" />
+            <path d="M8 18h3a3 3 0 0 0 3-3v-6a3 3 0 0 1 3-3" />
+          </svg>
+          {t("sidebar.routeHere")}
+        </button>
+      </div>
+    </aside>
   );
 };
 

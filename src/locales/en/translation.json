@@ -125,6 +125,10 @@
       "admin": "Administration",
       "economic": "Faculty of Economics",
       "auditorium": "Auditoriums",
+      "classrooms": "Classrooms",
+      "museums": "Museums & heritage",
+      "cafes": "Cafés & social spaces",
+      "facilities": "Facilities & entrances",
       "idzdn": "IDZDN",
       "khistory": "Department of History",
       "kinternationalrelations": "Department of International Relations",
@@ -144,7 +148,31 @@
       "dekan_economic": "<p><strong>Dean's Office</strong> — the official office of the head of the Faculty of Economics. Designed for strategic planning, student hours, and resolving academic matters.</p>",
       "dekanat_economic": "<p><strong>Faculty Office</strong> — the administrative center of the faculty. Here, registration officers and deputy deans manage schedules, exams, and issue certificates to students.</p>"
     },
-    "placeholder": "Search for a room..."
+    "placeholder": "Search rooms and places...",
+    "searchResults": "Search results",
+    "noResults": "No matching rooms or places"
+  },
+  "sidebar": {
+    "roomDetails": "Room details",
+    "close": "Close room details",
+    "roomNumber": "Room",
+    "category": "Category",
+    "floor": "Floor",
+    "equipment": "Equipment",
+    "accessibility": "Accessibility",
+    "about": "About this space",
+    "routeHere": "Route here",
+    "notAssigned": "Not assigned",
+    "photoUnavailable": "Room photo coming soon",
+    "equipmentFallback": "No equipment information is available yet",
+    "accessibilityFallback": "Contact reception for accessibility details",
+    "descriptionFallback": "More information about this space will be added soon.",
+    "categories": {
+      "administration": "Administration",
+      "economic": "Faculty of Economics",
+      "auditorium": "Teaching room",
+      "service": "University space"
+    }
   },
   "route": {
     "create": "Create route",
@@ -152,7 +180,15 @@
     "from": "From",
     "to": "To",
     "chooseFrom": "Choose starting point",
-    "chooseTo": "Choose destination"
+    "chooseTo": "Choose destination",
+    "start": "Start",
+    "destination": "Destination",
+    "changeFloor": "Continue to floor {{floor}}",
+    "summary": "Route summary",
+    "walkingTime": "Walk",
+    "minutes": "~{{count}} min",
+    "floorChangesLabel": "Floor changes",
+    "stairsLabel": "Stairs"
   },
   "entrances": {
     "main_entrance": "Main Entrance (New Building)",
